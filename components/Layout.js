@@ -1,16 +1,14 @@
-import { Container } from 'react-bootstrap';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
 import MainNav from './MainNav';
 
-
-export default function Layout(props) {
+export default function Layout({ children }) {
   return (
     <>
-    <MainNav />
-    <br />
-    <Container>
-        {props.children}      
-    </Container>
-    <br />
+      <MainNav />
+      <Box component="main">
+        {children}
+      </Box >
     </>
   );
 }

@@ -1,62 +1,98 @@
-import PageHeader from "@/components/PageHeader";
-import '../styles/Home.module.css';
-import { Card, Container, Row, Col } from 'react-bootstrap';
-import Map from "@/components/Map";
+import React from 'react';
+import { Box, Container, Typography, Button, Stack, Divider } from '@mui/material';
+import Link from 'next/link';
+import { useTheme } from '@mui/material/styles';
 
+const AboutPage = () => {
+  const theme = useTheme();
+  return (
+    <Box component="main" sx={{ width: '100%' }}>
+      {/* HERO SECTION */}
+      <Box
+        sx={{
+          width: '100%',
+          minHeight: '50vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: theme.custom.gradients.hero,
+          color: 'white',
+          mt: 0,
+        }}
+      >
+        <Container>
+          <Stack spacing={2} alignItems="center" textAlign="center">
+            <Typography variant="h2" component="h1" sx={{ fontWeight: 'bold' }}>
+              About PedalNYC
+            </Typography>
+            <Typography variant="h6" sx={{ maxWidth: 600 }}>
+              PedalNYC lets you explore NYC CitiBike trip data in a simple and interactive way.
+            </Typography>
+          </Stack>
+        </Container>
+      </Box>
 
-export default function About() {
-    const trip = {
-        "start station location": {
-            "coordinates":[-79.34943616, 43.79514851]
-        },
-        "end station location": {
-            "coordinates":[-79.36750352, 43.85012304]
-        },
-        "start station name": "Seneca College Newnham Campus",
-        "end station name": "Seneca College Markham Campus",
-    };
+      {/* ABOUT CONTENT */}
+      <Container sx={{ py: 8 }}>
+        <Stack spacing={6}>
+          {/* Section 1: Purpose */}
+          <Box>
+            <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
+              What PedalNYC Does
+            </Typography>
+            <Typography variant="body1">
+              PedalNYC is designed for anyone interested in analyzing NYC CitiBike trip data. Explore trips by filtering data based on <strong>birth year</strong>, <strong>date</strong>, and <strong>trip duration</strong>. This allows you to discover trends, patterns, and interesting facts about how people use CitiBike across the city.
+            </Typography>
+          </Box>
 
-    return (
-        <>
-            <PageHeader title="About" text="About me - Hello my name Kevin Timachy! I am a freelance web developer based in Toronto with a passion for creating efficient and innovative web solutions." showCustomer={false} showSubscriber={false} />
+          <Divider />
 
-            <Card>
-                <Container>
-                    <Row>
-                        <Col>
-                            <Card.Body>
-                                <Card.Title>Seneca Polytechnic College Newnham Campus</Card.Title>
-                                <Card.Text>Seneca College of Applied Arts and Technology, operating as Seneca Polytechnic. is a multiple-campus public college in the Greater Toronto Area, and Peterborough, Ontario, Canada regions. It offers full-time and part-time programs at the baccalaureate, diploma, certificate, and graduate levels. Wikipedia
-                                    <br />
-                                    <br/>
-                                    <b>Address:</b> 1750 Finch Ave E, North York, ON M2J 2X5
-                                    <br />
-                                    <br/>
-                                    <b>Phone:</b> (416) 491-5050
-                                    <br />
-                                    <br/>
-                                    <b>Undergraduate tution and fees:</b> 2,686 CAD, International tuition 11,970 CAD (2014 – 15)
-                                    <br />
-                                    <br />
-                                    <b>Total enrollment:</b> 97,500 (2014)
-                                    <br />
-                                    <br/>
-                                    <b>President:</b> David Agnew
-                                    <br />
-                                    <br/>
-                                    <b>Mascot:</b> Sammy Sting
-                                    <br />
-                                    <br/>
-                                    <b>Founded:</b>  1967
-                                </Card.Text>
-                            </Card.Body>
-                        </Col>
-                        <Col>
-                            <Map trip={trip}></Map>
-                        </Col>
-                    </Row>
-                </Container>
-            </Card>
-        </>
-    );
-}
+          {/* Section 2: How to Use It */}
+          <Box>
+            <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
+              How to Explore
+            </Typography>
+            <Stack spacing={1} component="ul" sx={{ pl: 3 }}>
+              <Typography component="li">
+                Filter trips by <strong>birth year</strong> to see age-related trends in CitiBike usage.
+              </Typography>
+              <Typography component="li">
+                Select specific <strong>dates</strong> to explore trip activity over time.
+              </Typography>
+              <Typography component="li">
+                Sort trips by <strong>duration</strong> to see how long people typically ride.
+              </Typography>
+            </Stack>
+          </Box>
+
+          <Divider />
+
+          {/* Section 3: Who It's For */}
+          <Box>
+            <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
+              Who Can Use It
+            </Typography>
+            <Typography variant="body1">
+              PedalNYC is perfect for students, researchers, cycling enthusiasts, or anyone curious about NYC CitiBike trip data. It's a simple way to explore, filter, and learn from real-world trip records without any complicated setup.
+            </Typography>
+          </Box>
+
+          {/* CTA */}
+          <Box sx={{ mt: 4 }}>
+            <Button
+              component={Link}
+              href="/trips"
+              variant="contained"
+              size="large"
+              sx={{ fontWeight: 'bold' }}
+            >
+              Explore Trip Data
+            </Button>
+          </Box>
+        </Stack>
+      </Container>
+    </Box >
+  );
+};
+
+export default AboutPage;

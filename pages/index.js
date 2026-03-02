@@ -1,75 +1,67 @@
-import '../styles/Home.module.css';
-import PageHeader from "@/components/PageHeader"
-import { Table, Pagination } from "react-bootstrap";
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import useSWR from "swr";
+import React from 'react';
+import { Container, Box, Typography, Button, Stack } from '@mui/material';
+import Link from 'next/link';
+import { useTheme } from '@mui/material/styles';
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
-
-export default function Home() {
-  const router = useRouter();
-  const [pageData, setPageData] = useState([]);
-  const [page, setPage] = useState(1);
-
-  const { data, error } = useSWR(`https://burgundy-sheep-toga.cyclic.app/api/trips?page=${page}&perPage=10`);
-
-  useEffect(() => {
-    if (data) {
-      setPageData(data);
-    }
-  }, [data]);
-
-  function next() {
-    setPage(page + 1);
-  }
-
-  function previous() {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  }
-
+const PedalNYCHero = () => {
+  const theme = useTheme();
   return (
-    <>
-      <PageHeader title="Trips List" text="Full list of CitiBike Trips" showCustomer={true} showSubscriber={true} />
-      <Table bordered hover className='table'>
-        <thead>
-          <tr>
-            <th>Bike ID</th>
-            <th>Start Station</th>
-            <th>End Station</th>
-            <th>Duration (Minutes)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pageData.map((trip) => (
-            <tr
-              key={trip._id}
-              className={trip?.usertype === "Subscriber" ? "Subscriber" : "Customer"}
-              onClick={() => { router.push(`/trip/${trip._id}`) }}
+    <Box
+      component="section"
+      sx={{
+        width: '100%',
+        minHeight: '95vh', // almost full viewport height
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: theme.custom.gradients.hero,
+        color: 'white',
+        mt: 0, // start right after navbar
+      }}
+    >
+      <Container>
+        <Stack
+          direction="column"
+          spacing={4}
+          alignItems="center"
+          justifyContent="center"
+          textAlign="center"
+        >
+          {/* Hero Title */}
+          <Typography variant="h2" component="h1" sx={{ fontWeight: 'bold' }}>
+            Explore NYC CitiBike Trips
+          </Typography>
+
+          {/* Hero Subtitle */}
+          <Typography variant="h6" sx={{ maxWidth: 600 }}>
+            Filter trips by <strong>birth year</strong>, <strong>dates</strong>, and <strong>trip duration</strong> to explore trips taken around NYC.
+          </Typography>
+
+          {/* CTA Buttons */}
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 3 }}>
+            <Button
+              component={Link}
+              href="/trips"
+              variant="contained"
+              size="large"
+              sx={{ fontWeight: 'bold' }}
             >
-              <td>{trip?.bikeid}</td>
-              <td>{trip["start station name"]}</td>
-              <td>{trip["end station name"]}</td>
-              <td>{(trip?.tripduration / 60).toFixed(2)}</td>
-            </tr>
-          ))}
-
-        </tbody>
-
-      </Table>
-      <Pagination>
-        <Pagination.Prev onClick={previous} />
-
-        <Pagination.Item active>{page}</Pagination.Item>
-
-        <Pagination.Next onClick={next} />
-
-      </Pagination>
-
-
-
-    </>
+              Search Trips
+            </Button>
+            <Button
+              component={Link}
+              href="/about"
+              variant="outlined"
+              size="large"
+              sx={{ fontWeight: 'bold', borderColor: 'white', color: 'white' }}
+            >
+              Learn More
+            </Button>
+          </Stack>
+        </Stack>
+      </Container>
+    </Box>
   );
-}
+};
+
+export default PedalNYCHero;

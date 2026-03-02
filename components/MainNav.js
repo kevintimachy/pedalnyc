@@ -1,23 +1,45 @@
-import { Container, Nav, Navbar } from "react-bootstrap";
-import Link from "next/link";
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
+import Link from 'next/link';
 
+const navLinks = [
+  { label: 'Trips', href: '/trips' },
+  { label: 'About', href: '/about' },
+];
 
 export default function MainNav() {
-    return (
-        <>
-            <Navbar className="fixed-top" bg="light" expand="lg">
-            <Container>
-                <Navbar.Brand>New York Citibike Trips</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="me-auto">
-                        <Link href="/" passHref legacyBehavior><Nav.Link>Full List</Nav.Link></Link>
-                        <Link href="/about" passHref legacyBehavior><Nav.Link>About</Nav.Link></Link>
-                    </Nav>
-                </Navbar.Collapse>
-            </Container>
-            </Navbar>
-            <br /><br />
-        </>
-    );
+  return (
+    <>
+      <AppBar position="sticky" color="default" elevation={2}>
+        <Container maxWidth="lg">
+          <Toolbar disableGutters>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
+              <Link href="/" passHref legacyBehavior>
+                <Typography
+                  component="a"
+                  variant="h6"
+                  sx={{ fontWeight: 600, color: 'primary.main', textDecoration: 'none' }}
+                >
+                  PedalNYC
+                </Typography>
+              </Link>
+              <Stack direction="row" spacing={1}>
+                {navLinks.map((link) => (
+                  <Link key={link.href} href={link.href} passHref legacyBehavior>
+                    <Button component="a" variant="text" color="inherit" sx={{ textTransform: 'none' }}>
+                      {link.label}
+                    </Button>
+                  </Link>
+                ))}
+              </Stack>
+            </Stack>
+          </Toolbar>
+        </Container>
+      </AppBar>
+    </>
+  );
 }
