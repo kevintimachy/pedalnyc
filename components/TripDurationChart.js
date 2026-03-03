@@ -29,8 +29,10 @@ export default function TripDurationChart({ filters }) {
         return <Typography variant="body1" color="error">Failed to load trip duration data.</Typography>;
     }
 
-    const dataset = data.map((d) => ({
-        range: `${Math.floor(d._id / 60)}-${Math.floor((d._id + 300) / 60)}`, // convert seconds to minutes
+    const dataset = data.map((d, i) => ({
+        range: i === data.length - 1
+            ? `${Math.floor(d._id / 60)}+`      // last range: number+
+            : `${Math.floor(d._id / 60)}-${Math.floor((d._id + 300) / 60)}`, // regular ranges
         trips: d.count,
     }));
 
@@ -48,14 +50,11 @@ export default function TripDurationChart({ filters }) {
             }
         ],
         series: [{ dataKey: 'trips', label: 'Trips', color: theme.palette.primary.main }],
-        height: 200,
+        height: 250,
     }
 
     return (
         <Box>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                Trip Duration Distribution
-            </Typography>
             <BarChart
                 dataset={dataset}
                 {...chartSetting}

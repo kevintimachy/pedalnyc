@@ -55,10 +55,7 @@ export default function UserTypePieChart({ filters }) {
 
   return (
     <Box>
-      <Typography variant="subtitle1" gutterBottom>
-        User Type Distribution
-      </Typography>
-      <PieChart series={seriesData} height={200} />
+      <PieChart series={seriesData} />
     </Box>
   );
 }

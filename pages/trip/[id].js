@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
-import PageHeader from "@/components/PageHeader";
 import Map from "@/components/Map";
 
 import {

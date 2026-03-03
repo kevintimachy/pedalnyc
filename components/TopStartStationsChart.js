@@ -39,7 +39,7 @@ export default function TopStartStationsChart({ filters }) {
             {
                 dataKey: 'station',
                 scaleType: 'band',
-                label: 'Start Station',
+
             },
         ],
         series: [
@@ -50,13 +50,12 @@ export default function TopStartStationsChart({ filters }) {
                 color: theme.palette.primary.main,
             },
         ],
-        height: 320,
+        height: 250,
     };
 
 
     return (
         <Box>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>Top Start Stations</Typography>
             <BarChart
                 dataset={dataset}
                 {...chartSetting}

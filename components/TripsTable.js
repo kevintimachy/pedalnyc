@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 
-const ROWS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
+const ROWS_PER_PAGE_OPTIONS = [10, 20, 50];
 
 export default function TripsTable({
   rows = [],
@@ -28,7 +28,7 @@ export default function TripsTable({
     <Box>
       <TableContainer
         sx={{
-          maxHeight: '500px', // ✅ key for sticky
+          maxHeight: '250px',
         }}
       >
         <Table stickyHeader size="small">
