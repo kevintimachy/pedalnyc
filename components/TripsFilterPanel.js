@@ -1,5 +1,18 @@
 import React from 'react';
-import { Box, Paper, Typography, Grid, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Stack, Button } from '@mui/material';
+import {
+  Box,
+  Paper,
+  Typography,
+  Stack,
+  TextField,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Button,
+  Divider,
+} from '@mui/material';
 
 export default function TripsFilterPanel({
   filters,
@@ -8,103 +21,147 @@ export default function TripsFilterPanel({
   onClearFilters,
   activeFiltersCount,
 }) {
-  // Disable birth year if user selects "Customer"
   const birthYearDisabled = filters.usertype === 'Customer';
 
   return (
-    <Box component={Paper} sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Filter trips
+    <Box
+      component={Paper}
+      elevation={0}
+      sx={{
+        p: 2,
+        width: '100%',
+        borderRadius: 2,
+      }}
+    >
+      {/* Header */}
+      <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 2 }}>
+        Filters
       </Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={3}>
+
+      <Divider sx={{ mb: 2 }} />
+
+      {/* Vertical stacked layout */}
+      <Stack spacing={2}>
+        {/* Time filters */}
+        <Typography variant="caption" color="text.secondary">
+          Trip Start Time
+        </Typography>
+        <Stack direction="row" spacing={1}>
           <TextField
-            label="Start Date"
-            type="date"
-            value={filters.startDate}
-            onChange={onFilterChange('startDate')}
+            size="small"
+            label="From"
+            type="time"
+            value={filters.startTime}
+            onChange={onFilterChange('startTime')}
+            sx={{ width: '50%' }}
             InputLabelProps={{ shrink: true }}
-            fullWidth
           />
-        </Grid>
-        <Grid item xs={12} md={3}>
+
           <TextField
-            label="End Date"
-            type="date"
-            value={filters.endDate}
-            onChange={onFilterChange('endDate')}
+            size="small"
+            label="To"
+            type="time"
+            value={filters.endTime}
+            onChange={onFilterChange('endTime')}
+            sx={{ width: '50%' }}
             InputLabelProps={{ shrink: true }}
-            fullWidth
           />
-        </Grid>
-        <Grid item xs={12} md={2}>
+        </Stack>
+
+        {/* Duration */}
+        <Typography variant="caption" color="text.secondary">
+          Trip Duration (minutes)
+        </Typography>
+        <Stack direction="row" spacing={1}>
           <TextField
-            label="Min Duration (secs)"
+            size="small"
+            label="Min"
             type="number"
             value={filters.minDuration}
             onChange={onFilterChange('minDuration')}
             fullWidth
           />
-        </Grid>
-        <Grid item xs={12} md={2}>
           <TextField
-            label="Max Duration (secs)"
+            size="small"
+            label="Max"
             type="number"
             value={filters.maxDuration}
             onChange={onFilterChange('maxDuration')}
             fullWidth
           />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <FormControl component="fieldset">
-            <FormLabel component="legend">User Type</FormLabel>
-            <RadioGroup
-              row
-              value={filters.usertype}
-              onChange={(e) => onFilterChange('usertype')({ target: { value: e.target.value } })}
-            >
-              <FormControlLabel value="" control={<Radio />} label="Any" />
-              <FormControlLabel value="Customer" control={<Radio />} label="Customer" />
-              <FormControlLabel value="Subscriber" control={<Radio />} label="Subscriber" />
-            </RadioGroup>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={2}>
+        </Stack>
+
+        {/* User Type */}
+        <FormControl>
+          <FormLabel sx={{ fontSize: 12, mb: 0.5 }}>User Type</FormLabel>
+          <RadioGroup
+            value={filters.usertype}
+            onChange={(e) =>
+              onFilterChange('usertype')({ target: { value: e.target.value } })
+            }
+          >
+            <FormControlLabel value="" control={<Radio size="small" />} label="Any" />
+            <FormControlLabel value="Customer" control={<Radio size="small" />} label="Customer" />
+            <FormControlLabel value="Subscriber" control={<Radio size="small" />} label="Subscriber" />
+          </RadioGroup>
+        </FormControl>
+
+        {/* Birth Year */}
+        <Typography variant="caption" color="text.secondary">
+          Birth Year
+        </Typography>
+        <Stack direction="row" spacing={1}>
           <TextField
-            label="Min Birth Year"
+            size="small"
+            label="Min"
             type="number"
             value={filters.minBirthYear}
             onChange={onFilterChange('minBirthYear')}
             fullWidth
             disabled={birthYearDisabled}
-            helperText={birthYearDisabled ? 'Birth year only applies to Subscribers' : ''}
           />
-        </Grid>
-        <Grid item xs={12} md={2}>
           <TextField
-            label="Max Birth Year"
+            size="small"
+            label="Max"
             type="number"
             value={filters.maxBirthYear}
             onChange={onFilterChange('maxBirthYear')}
             fullWidth
             disabled={birthYearDisabled}
           />
-        </Grid>
+        </Stack>
 
-      </Grid>
+        {/* Actions */}
+        <Divider />
 
-      <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-        <Button variant="contained" onClick={onApplyFilters}>
-          Apply filters
-        </Button>
-        <Button variant="text" onClick={onClearFilters}>
-          Clear filters
-        </Button>
-        {activeFiltersCount > 0 && (
-          <Typography variant="body2" color="text.secondary" sx={{ alignSelf: 'center' }}>
-            {`Filter applied (${activeFiltersCount} criteria)`}
-          </Typography>
-        )}
+        <Stack spacing={1}>
+          {activeFiltersCount > 0 && (
+            <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center' }}>
+              {activeFiltersCount} active filters
+            </Typography>
+          )}
+
+          <Button size="small" variant="outlined" onClick={onClearFilters} fullWidth>
+            Clear Filters
+          </Button>
+
+          <Button
+            size="small"
+            variant="contained"
+            onClick={() => {
+              // Hardcode date to 2016-01-01 when sending to backend
+              const payload = {
+                ...filters,
+                startDate: '2016-01-01',
+                endDate: '2016-01-01',
+              };
+              onApplyFilters(payload);
+            }}
+            fullWidth
+          >
+            Apply Filters
+          </Button>
+        </Stack>
       </Stack>
     </Box>
   );

@@ -4,19 +4,24 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#36656B',
-            light: '#75B06F'
+            main: '#2F89B3',
+            light: '#3B50B2'
+
         },
         secondary: {
-            main: '#DAD887',
-            light: '#F0F8A4'
+            main: '#41D8BF',
+            dark: '#225763'
         },
     },
     custom: {
         gradients: {
-            hero: 'linear-gradient(135deg, #75B06F 0%, #F0F8A4 100%)',
+            hero: 'linear-gradient(135deg, #3B50B2 0%, #41D8BF 100%)',
         },
     },
+    shape: {
+        borderRadius: 3,
+    },
+
 });
 
 export default theme;

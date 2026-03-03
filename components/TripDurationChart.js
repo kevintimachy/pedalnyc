@@ -45,7 +45,6 @@ export default function TripDurationChart({ filters }) {
         yAxis: [
             {
                 dataKey: 'trips',
-                label: 'Number of Trips',
             }
         ],
         series: [{ dataKey: 'trips', label: 'Trips', color: theme.palette.primary.main }],

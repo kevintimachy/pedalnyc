@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Layout from "@/components/Layout";
 import PageHeader from "@/components/PageHeader";
 import Map from "@/components/Map";
 
@@ -12,6 +13,7 @@ import {
     Box,
     Divider,
     Skeleton,
+    Toolbar,
 } from "@mui/material";
 
 // ---------------- STATIC PATHS ----------------
@@ -70,7 +72,8 @@ export default function Trips({ trip }) {
         : "—";
 
     return (
-        <>
+        <Layout>
+            <Toolbar />
             <Container sx={{ mt: 4 }}>
                 <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
                     Bike {trip.bikeid}
@@ -147,6 +150,6 @@ export default function Trips({ trip }) {
                     </Grid>
                 </Grid>
             </Container >
-        </>
+        </Layout>
     );
 }
