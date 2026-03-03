@@ -1,11 +1,15 @@
 'use client';
 import '../styles/Home.module.css';
-import { Container, Typography } from '@mui/material';
+import { Box, Typography, Stack, Grid, Paper } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import TripsFilterPanel from '@/components/TripsFilterPanel';
 import TripsTable from '@/components/TripsTable';
+import UserTypePieChart from '@/components/UserTypePieChart';
+import TripDurationChart from '@/components/TripDurationChart';
+import { useTheme } from '@mui/material';
+import TopStartStationsChart from '@/components/TopStartStationsChart';
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 const baseApiUrl = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
@@ -21,6 +25,7 @@ const defaultFilterState = {
 };
 
 export default function Trips() {
+    const theme = useTheme();
     const router = useRouter();
     const [pageData, setPageData] = useState([]);
     const [pageIndex, setPageIndex] = useState(0);
@@ -112,35 +117,73 @@ export default function Trips() {
     };
 
     return (
-        <Container sx={{ mt: 4 }}>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
-                Bike Trips Explorer
+        <Box sx={{ m: 4 }}>
+            <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 3 }}>
+                Explore NYC CitiBike Trips
             </Typography>
 
-            <TripsFilterPanel
-                filters={filters}
-                onFilterChange={handleFilterChange}
-                onApplyFilters={handleApplyFilters}
-                onClearFilters={handleClearFilters}
-                activeFiltersCount={activeFiltersCount}
-            />
-
-            {error ? (
-                <Typography variant="body1" color="error">
-                    Failed to load trips. Please try again later.
-                </Typography>
-            ) : (
-                <TripsTable
-                    rows={pageData}
-                    isLoading={isLoading}
-                    pageIndex={pageIndex}
-                    rowsPerPage={rowsPerPage}
-                    totalTrips={totalTrips}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    onRowClick={handleRowClick}
+            <Stack spacing={3} sx={{ mb: 3 }}>
+                <TripsFilterPanel
+                    filters={filters}
+                    onFilterChange={handleFilterChange}
+                    onApplyFilters={handleApplyFilters}
+                    onClearFilters={handleClearFilters}
+                    activeFiltersCount={activeFiltersCount}
                 />
-            )}
-        </Container>
+            </Stack>
+
+            {/* 🔥 DASHBOARD GRID */}
+            <Grid container spacing={3}>
+
+                {/* LEFT SIDE (charts area) */}
+                <Grid item xs={12} lg={6}>
+                    <Grid container spacing={3}>
+
+                        {/* User Type Pie */}
+                        <Grid item xs={12} md={6}>
+                            <Paper sx={{ p: 2, height: '100%' }}>
+                                <UserTypePieChart filters={filterString} />
+                            </Paper>
+                        </Grid>
+
+                        {/* Trip Duration */}
+                        <Grid item xs={12} md={6}>
+                            <Paper sx={{ p: 2, height: '100%' }}>
+                                <TripDurationChart filters={filterString} />
+                            </Paper>
+                        </Grid>
+
+                        {/* Top Stations full width under */}
+                        <Grid item xs={12}>
+                            <Paper sx={{ p: 2 }}>
+                                <TopStartStationsChart filters={filterString} />
+                            </Paper>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                {/* RIGHT SIDE (table) */}
+                <Grid item xs={12} lg={6}>
+                    <Paper sx={{ p: 2, height: '100%' }}>
+                        {error ? (
+                            <Typography variant="body1" color="error">
+                                Failed to load trips. Please try again later.
+                            </Typography>
+                        ) : (
+                            <TripsTable
+                                rows={pageData}
+                                isLoading={isLoading}
+                                pageIndex={pageIndex}
+                                rowsPerPage={rowsPerPage}
+                                totalTrips={totalTrips}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                onRowClick={handleRowClick}
+                            />
+                        )}
+                    </Paper>
+                </Grid>
+            </Grid>
+        </Box>
     );
 }

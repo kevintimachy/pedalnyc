@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import Link from 'next/link';
 
 const navLinks = [
-  { label: 'Trips', href: '/trips' },
+  { label: 'Explore Trips', href: '/trips' },
   { label: 'About', href: '/about' },
 ];
 

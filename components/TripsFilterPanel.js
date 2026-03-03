@@ -1,16 +1,5 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import React from 'react';
+import { Box, Paper, Typography, Grid, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Stack, Button } from '@mui/material';
 
 export default function TripsFilterPanel({
   filters,
@@ -19,8 +8,11 @@ export default function TripsFilterPanel({
   onClearFilters,
   activeFiltersCount,
 }) {
+  // Disable birth year if user selects "Customer"
+  const birthYearDisabled = filters.usertype === 'Customer';
+
   return (
-    <Box component={Paper} elevation={2} sx={{ p: 3, mb: 3 }}>
+    <Box component={Paper} sx={{ p: 3 }}>
       <Typography variant="h6" gutterBottom>
         Filter trips
       </Typography>
@@ -47,39 +39,6 @@ export default function TripsFilterPanel({
         </Grid>
         <Grid item xs={12} md={2}>
           <TextField
-            label="Min Birth Year"
-            type="number"
-            value={filters.minBirthYear}
-            onChange={onFilterChange('minBirthYear')}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          <TextField
-            label="Max Birth Year"
-            type="number"
-            value={filters.maxBirthYear}
-            onChange={onFilterChange('maxBirthYear')}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          <FormControl fullWidth>
-            <InputLabel id="usertype-label">User Type</InputLabel>
-            <Select
-              labelId="usertype-label"
-              label="User Type"
-              value={filters.usertype}
-              onChange={onFilterChange('usertype')}
-            >
-              <MenuItem value="">Any</MenuItem>
-              <MenuItem value="Customer">Customer</MenuItem>
-              <MenuItem value="Subscriber">Subscriber</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={2}>
-          <TextField
             label="Min Duration (secs)"
             type="number"
             value={filters.minDuration}
@@ -96,7 +55,44 @@ export default function TripsFilterPanel({
             fullWidth
           />
         </Grid>
+        <Grid item xs={12} md={3}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">User Type</FormLabel>
+            <RadioGroup
+              row
+              value={filters.usertype}
+              onChange={(e) => onFilterChange('usertype')({ target: { value: e.target.value } })}
+            >
+              <FormControlLabel value="" control={<Radio />} label="Any" />
+              <FormControlLabel value="Customer" control={<Radio />} label="Customer" />
+              <FormControlLabel value="Subscriber" control={<Radio />} label="Subscriber" />
+            </RadioGroup>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <TextField
+            label="Min Birth Year"
+            type="number"
+            value={filters.minBirthYear}
+            onChange={onFilterChange('minBirthYear')}
+            fullWidth
+            disabled={birthYearDisabled}
+            helperText={birthYearDisabled ? 'Birth year only applies to Subscribers' : ''}
+          />
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <TextField
+            label="Max Birth Year"
+            type="number"
+            value={filters.maxBirthYear}
+            onChange={onFilterChange('maxBirthYear')}
+            fullWidth
+            disabled={birthYearDisabled}
+          />
+        </Grid>
+
       </Grid>
+
       <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
         <Button variant="contained" onClick={onApplyFilters}>
           Apply filters

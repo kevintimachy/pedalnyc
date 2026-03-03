@@ -5,14 +5,16 @@ const theme = createTheme({
     palette: {
         primary: {
             main: '#36656B',
+            light: '#75B06F'
         },
         secondary: {
-            main: '#75B06F',
+            main: '#DAD887',
+            light: '#F0F8A4'
         },
     },
     custom: {
         gradients: {
-            hero: 'linear-gradient(135deg, #75B06F 0%, #DAD887 100%)',
+            hero: 'linear-gradient(135deg, #75B06F 0%, #F0F8A4 100%)',
         },
     },
 });
