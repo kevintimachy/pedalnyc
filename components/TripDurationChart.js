@@ -28,18 +28,28 @@ export default function TripDurationChart({ filters }) {
     if (error) {
         return <Typography variant="body1" color="error">Failed to load trip duration data.</Typography>;
     }
+    const BUCKET_SIZE = 300; // seconds (5 min)
+
+    // find the highest numeric bucket start
+    const lastNumericId = Math.max(
+        ...data
+            .filter((d) => typeof d._id === "number")
+            .map((d) => d._id)
+    );
+
     const dataset = data.map((d) => {
-        // overflow bucket
-        if (d._id === "Other") {
+        const isOverflow = typeof d._id !== "number";
+
+        if (isOverflow) {
             return {
-                range: `${Math.floor(3300 / 60)}+`, // or compute dynamically
+                range: `${Math.floor((lastNumericId + BUCKET_SIZE) / 60)}+`,
                 trips: d.count,
             };
         }
 
-        // normal bucket
+        // ✅ normal bucket
         return {
-            range: `${Math.floor(d._id / 60)}-${Math.floor((d._id + 300) / 60)}`,
+            range: `${Math.floor(d._id / 60)}-${Math.floor((d._id + BUCKET_SIZE) / 60)}`,
             trips: d.count,
         };
     });
