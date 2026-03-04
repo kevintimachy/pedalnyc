@@ -21,6 +21,8 @@ const defaultFilterState = {
     maxBirthYear: '',
     minDuration: '',
     maxDuration: '',
+    minDurationSeconds: '',
+    maxDurationSeconds: '',
     usertype: '',
 };
 
@@ -71,17 +73,67 @@ export default function Dashboard() {
         setPageIndex(0);
     };
 
+    const toSeconds = (value) => {
+        if (value === '' || value === null || value === undefined) {
+            return '';
+        }
+        const parsed = Number(value);
+        return Number.isNaN(parsed) ? '' : parsed * 60;
+    };
+
     const handleFilterChange = (key) => (event) => {
-        setFilters((prev) => ({ ...prev, [key]: event.target.value }));
+        const value = event.target.value;
+        setFilters((prev) => {
+            if (key === 'usertype' && (value === 'Customer' || value === '')) {
+                return {
+                    ...prev,
+                    [key]: value,
+                    minBirthYear: '',
+                    maxBirthYear: '',
+                };
+            }
+
+            if (key === 'minDuration') {
+                return {
+                    ...prev,
+                    minDuration: value,
+                    minDurationSeconds: toSeconds(value),
+                };
+            }
+
+            if (key === 'maxDuration') {
+                return {
+                    ...prev,
+                    maxDuration: value,
+                    maxDurationSeconds: toSeconds(value),
+                };
+            }
+
+            return { ...prev, [key]: value };
+        });
     };
 
     const handleApplyFilters = () => {
         const normalized = { ...filters };
         const date = '2016-01-01';
-        normalized.startDate = `${date}T${filters.startTime || '00:00'}:00.000+00:00`;
-        normalized.endDate = `${date}T${filters.endTime || '23:59'}:59.999+00:00`;
+        const hasTimeFilter = Boolean(filters.startTime || filters.endTime);
+        if (hasTimeFilter) {
+            normalized.startDate = `${date}T${filters.startTime || '00:00'}:00.000+00:00`;
+            normalized.endDate = `${date}T${filters.endTime || '23:59'}:59.999+00:00`;
+        } else {
+            delete normalized.startDate;
+            delete normalized.endDate;
+        }
+        normalized.minDuration = filters.minDurationSeconds;
+        normalized.maxDuration = filters.maxDurationSeconds;
         delete normalized.startTime;
         delete normalized.endTime;
+        delete normalized.minDurationSeconds;
+        delete normalized.maxDurationSeconds;
+        if (normalized.usertype === 'Customer' || normalized.usertype === '') {
+            delete normalized.minBirthYear;
+            delete normalized.maxBirthYear;
+        }
         setActiveFilters(normalized);
         setPageIndex(0);
     };
@@ -97,7 +149,16 @@ export default function Dashboard() {
         setModalOpen(true);
     };
 
-    const activeFiltersCount = Object.keys(activeFilters).length;
+    const activeFiltersCount = useMemo(() => {
+        const excludedKeys = new Set(['startDate', 'endDate']);
+        return Object.entries(activeFilters).filter(([key, value]) => {
+            if (excludedKeys.has(key)) return false;
+            if (key === 'usertype' && (value === '' || value === null || value === undefined)) {
+                return false;
+            }
+            return value !== '' && value !== null && value !== undefined;
+        }).length;
+    }, [activeFilters]);
 
     return (
         <DashboardLayout

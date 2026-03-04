@@ -5,6 +5,7 @@ import {
   Typography,
   Stack,
   TextField,
+  Tooltip,
   FormControl,
   FormLabel,
   RadioGroup,
@@ -21,7 +22,7 @@ export default function TripsFilterPanel({
   onClearFilters,
   activeFiltersCount,
 }) {
-  const birthYearDisabled = filters.usertype === 'Customer';
+  const birthYearDisabled = filters.usertype === 'Customer' || filters.usertype === '';
 
   return (
     <Box
@@ -96,9 +97,14 @@ export default function TripsFilterPanel({
           <FormLabel sx={{ fontSize: 12, mb: 0.5 }}>User Type</FormLabel>
           <RadioGroup
             value={filters.usertype}
-            onChange={(e) =>
-              onFilterChange('usertype')({ target: { value: e.target.value } })
-            }
+            onChange={(e) => {
+              const { value } = e.target;
+              onFilterChange('usertype')({ target: { value } });
+              if (value === 'Customer' || value === '') {
+                onFilterChange('minBirthYear')({ target: { value: '' } });
+                onFilterChange('maxBirthYear')({ target: { value: '' } });
+              }
+            }}
           >
             <FormControlLabel value="" control={<Radio size="small" />} label="Any" />
             <FormControlLabel value="Customer" control={<Radio size="small" />} label="Customer" />
@@ -110,26 +116,34 @@ export default function TripsFilterPanel({
         <Typography variant="caption" color="text.secondary">
           Birth Year
         </Typography>
-        <Stack direction="row" spacing={1}>
-          <TextField
-            size="small"
-            label="Min"
-            type="number"
-            value={filters.minBirthYear}
-            onChange={onFilterChange('minBirthYear')}
-            fullWidth
-            disabled={birthYearDisabled}
-          />
-          <TextField
-            size="small"
-            label="Max"
-            type="number"
-            value={filters.maxBirthYear}
-            onChange={onFilterChange('maxBirthYear')}
-            fullWidth
-            disabled={birthYearDisabled}
-          />
-        </Stack>
+        <Tooltip
+          title="Birth year filters are available for Subscribers only."
+          arrow
+          disableHoverListener={!birthYearDisabled}
+          disableFocusListener={!birthYearDisabled}
+          disableTouchListener={!birthYearDisabled}
+        >
+          <Stack direction="row" spacing={1}>
+            <TextField
+              size="small"
+              label="Min"
+              type="number"
+              value={filters.minBirthYear}
+              onChange={onFilterChange('minBirthYear')}
+              fullWidth
+              disabled={birthYearDisabled}
+            />
+            <TextField
+              size="small"
+              label="Max"
+              type="number"
+              value={filters.maxBirthYear}
+              onChange={onFilterChange('maxBirthYear')}
+              fullWidth
+              disabled={birthYearDisabled}
+            />
+          </Stack>
+        </Tooltip>
 
         {/* Actions */}
         <Divider />

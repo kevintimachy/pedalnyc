@@ -30,9 +30,9 @@ export default function TripDurationChart({ filters }) {
     }
 
     const dataset = data.map((d, i) => ({
-        range: i === data.length - 1
-            ? `${Math.floor(d._id / 60)}+`      // last range: number+
-            : `${Math.floor(d._id / 60)}-${Math.floor((d._id + 300) / 60)}`, // regular ranges
+
+        // last range: number+
+        range: `${Math.floor(d._id / 60)}-${Math.floor((d._id + 300) / 60)}`, // regular ranges
         trips: d.count,
     }));
 
