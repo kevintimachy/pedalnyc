@@ -17,6 +17,8 @@ const baseApiUrl = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
 const defaultFilterState = {
     startDate: '',
     endDate: '',
+    startTime: '',
+    endTime: '',
     minBirthYear: '',
     maxBirthYear: '',
     minDuration: '',
@@ -41,6 +43,7 @@ export default function Dashboard() {
         const params = new URLSearchParams();
         Object.entries(activeFilters).forEach(([key, value]) => {
             if (value !== '' && value !== null && value !== undefined) {
+                if (key === 'startTime' || key === 'endTime') return;
                 params.append(key, value);
             }
         });
@@ -116,18 +119,24 @@ export default function Dashboard() {
     const handleApplyFilters = () => {
         const normalized = { ...filters };
         const date = '2016-01-01';
-        const hasTimeFilter = Boolean(filters.startTime || filters.endTime);
+        const startTime =
+            typeof filters.startTime === 'string' ? filters.startTime.trim() : '';
+        const endTime =
+            typeof filters.endTime === 'string' ? filters.endTime.trim() : '';
+        const hasTimeFilter = Boolean(startTime || endTime);
         if (hasTimeFilter) {
-            normalized.startDate = `${date}T${filters.startTime || '00:00'}:00.000+00:00`;
-            normalized.endDate = `${date}T${filters.endTime || '23:59'}:59.999+00:00`;
+            normalized.startDate = `${date}T${startTime || '00:00'}:00.000+00:00`;
+            normalized.endDate = `${date}T${endTime || '23:59'}:59.999+00:00`;
+            normalized.startTime = startTime;
+            normalized.endTime = endTime;
         } else {
             delete normalized.startDate;
             delete normalized.endDate;
+            delete normalized.startTime;
+            delete normalized.endTime;
         }
         normalized.minDuration = filters.minDurationSeconds;
         normalized.maxDuration = filters.maxDurationSeconds;
-        delete normalized.startTime;
-        delete normalized.endTime;
         delete normalized.minDurationSeconds;
         delete normalized.maxDurationSeconds;
         if (normalized.usertype === 'Customer' || normalized.usertype === '') {
@@ -151,13 +160,14 @@ export default function Dashboard() {
 
     const activeFiltersCount = useMemo(() => {
         const excludedKeys = new Set(['startDate', 'endDate']);
-        return Object.entries(activeFilters).filter(([key, value]) => {
+        const baseCount = Object.entries(activeFilters).filter(([key, value]) => {
             if (excludedKeys.has(key)) return false;
             if (key === 'usertype' && (value === '' || value === null || value === undefined)) {
                 return false;
             }
             return value !== '' && value !== null && value !== undefined;
         }).length;
+        return baseCount;
     }, [activeFilters]);
 
     return (

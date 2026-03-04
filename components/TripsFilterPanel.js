@@ -45,7 +45,7 @@ export default function TripsFilterPanel({
       <Stack spacing={2}>
         {/* Time filters */}
         <Typography variant="caption" color="text.secondary">
-          Trip Start Time
+          Trip Time Range
         </Typography>
         <Stack direction="row" spacing={1}>
           <TextField
