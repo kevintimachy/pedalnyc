@@ -28,13 +28,21 @@ export default function TripDurationChart({ filters }) {
     if (error) {
         return <Typography variant="body1" color="error">Failed to load trip duration data.</Typography>;
     }
+    const dataset = data.map((d) => {
+        // overflow bucket
+        if (d._id === "Other") {
+            return {
+                range: `${Math.floor(3300 / 60)}+`, // or compute dynamically
+                trips: d.count,
+            };
+        }
 
-    const dataset = data.map((d, i) => ({
-
-        // last range: number+
-        range: `${Math.floor(d._id / 60)}-${Math.floor((d._id + 300) / 60)}`, // regular ranges
-        trips: d.count,
-    }));
+        // normal bucket
+        return {
+            range: `${Math.floor(d._id / 60)}-${Math.floor((d._id + 300) / 60)}`,
+            trips: d.count,
+        };
+    });
 
     const chartSetting = {
         xAxis: [
