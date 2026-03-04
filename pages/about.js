@@ -1,16 +1,67 @@
-import React from 'react';
+'use client';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
-import { Toolbar, Box, Container, Typography, Button, Stack, Divider } from '@mui/material';
+import TripModal from '@/components/TripModal';
+import {
+  Toolbar,
+  Box,
+  Container,
+  Typography,
+  Button,
+  Stack,
+  Divider,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+} from '@mui/material';
 import Link from 'next/link';
 import { useTheme } from '@mui/material/styles';
 
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
 const AboutPage = () => {
   const theme = useTheme();
+
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState(null);
+
+  // Sample trips state
+  const [trips, setTrips] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch a few trips on mount
+  useEffect(() => {
+    async function loadTrips() {
+      try {
+        const data = await fetcher(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/trips?page=4&perPage=5`
+        );
+        setTrips(data.trips ?? []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadTrips();
+  }, []);
+
+  const handleRowClick = (trip) => {
+    setSelectedTrip(trip);
+    setModalOpen(true);
+  };
+
   return (
     <Layout>
       <Box component="main" sx={{ width: '100%' }}>
         {/* HERO SECTION */}
-        <Toolbar /> {/* ← perfect AppBar offset */}
+        <Toolbar />
 
         <Box
           sx={{
@@ -51,7 +102,51 @@ const AboutPage = () => {
 
             <Divider />
 
-            {/* Section 2: How It Works */}
+            {/* Section 2: Sample Trips Table with Modal */}
+            <Box>
+              <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
+                Sample Trips
+              </Typography>
+              {loading ? (
+                <CircularProgress />
+              ) : trips.length === 0 ? (
+                <Typography>No trips found.</Typography>
+              ) : (
+                <TableContainer component={Paper}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Bike ID</TableCell>
+                        <TableCell>Start Station</TableCell>
+                        <TableCell>End Station</TableCell>
+                        <TableCell>Duration (Minutes)</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {trips.map((trip) => (
+                        <TableRow
+                          key={trip._id}
+                          hover
+                          sx={{ cursor: 'pointer' }}
+                          onClick={() => handleRowClick(trip)}
+                        >
+                          <TableCell>{trip.bikeid}</TableCell>
+                          <TableCell>{trip['start station name']}</TableCell>
+                          <TableCell>{trip['end station name']}</TableCell>
+                          <TableCell>
+                            {(trip.tripduration / 60).toFixed(2)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
+            </Box>
+
+            <Divider />
+
+            {/* Section 3: How It Works */}
             <Box>
               <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
                 How to Explore
@@ -71,30 +166,7 @@ const AboutPage = () => {
 
             <Divider />
 
-            {/* Section 3: Who It's For */}
-            <Box>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
-                Who Can Benefit
-              </Typography>
-              <Typography variant="body1">
-                PedalNYC is ideal for students, researchers, urban planners, cycling enthusiasts, or anyone interested in exploring real-world NYC CitiBike data.
-                No setup or coding is required — simply filter, visualize, and discover insights instantly.
-              </Typography>
-            </Box>
-
-            {/* Section 4: Why It Matters */}
-            <Divider />
-            <Box>
-              <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
-                Why It Matters
-              </Typography>
-              <Typography variant="body1">
-                Understanding CitiBike usage helps reveal city mobility trends, popular commuting patterns, and rider preferences.
-                With PedalNYC, you can gain insights that inform research, improve urban planning, or simply satisfy your curiosity about cycling in NYC.
-              </Typography>
-            </Box>
-
-            {/* CTA */}
+            {/* Section 4: CTA */}
             <Box sx={{ mt: 4 }}>
               <Button
                 component={Link}
@@ -108,8 +180,18 @@ const AboutPage = () => {
             </Box>
           </Stack>
         </Container>
-      </Box >
-    </Layout >
+      </Box>
+
+      {/* TRIP MODAL */}
+      <TripModal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setSelectedTrip(null);
+        }}
+        trip={selectedTrip}
+      />
+    </Layout>
   );
 };
 

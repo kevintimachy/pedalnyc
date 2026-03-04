@@ -62,13 +62,15 @@ export default function Trips({ trip }) {
             ? (trip.tripduration / 60).toFixed(2)
             : "—";
 
-    const startTime = trip["start time"]
-        ? new Date(trip["start time"]).toLocaleString()
-        : "—";
+    const formatTripDate = (value) => {
+        if (!value) return "—";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "—";
+        return `${date.toLocaleString("en-US", { timeZone: "UTC" })} UTC`;
+    };
 
-    const stopTime = trip["stop time"]
-        ? new Date(trip["stop time"]).toLocaleString()
-        : "—";
+    const startTime = formatTripDate(trip["start time"]);
+    const stopTime = formatTripDate(trip["stop time"]);
 
     return (
         <Layout>

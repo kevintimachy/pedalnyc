@@ -5,6 +5,7 @@ import TripsTable from '@/components/TripsTable';
 import UserTypePieChart from '@/components/UserTypePieChart';
 import TripDurationChart from '@/components/TripDurationChart';
 import TopStartStationsChart from '@/components/TopStartStationsChart';
+import TripModal from '@/components/TripModal';
 import { Box, Grid, Paper, Typography, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
@@ -24,8 +25,9 @@ const defaultFilterState = {
 };
 
 export default function Dashboard() {
-    const theme = useTheme();
     const router = useRouter();
+    const [selectedTrip, setSelectedTrip] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
     const [pageData, setPageData] = useState([]);
     const [pageIndex, setPageIndex] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -50,6 +52,8 @@ export default function Dashboard() {
 
     const { data, error } = useSWR(endpoint, fetcher);
     const isLoading = !data && !error;
+
+    console.log(data);
 
     useEffect(() => {
         if (!data) return;
@@ -88,8 +92,12 @@ export default function Dashboard() {
         setPageIndex(0);
     };
 
+    const handleRowClick = (trip) => {
+        setSelectedTrip(trip);
+        setModalOpen(true);
+    };
+
     const activeFiltersCount = Object.keys(activeFilters).length;
-    const handleRowClick = (id) => router.push(`/trip/${id}`);
 
     return (
         <DashboardLayout
@@ -165,6 +173,14 @@ export default function Dashboard() {
                         </Paper>
                     </Grid>
                 </Grid>
+                <TripModal
+                    open={modalOpen}
+                    onClose={() => {
+                        setModalOpen(false);
+                        setSelectedTrip(null);
+                    }}
+                    trip={selectedTrip}
+                />
             </Box>
         </DashboardLayout>
     );

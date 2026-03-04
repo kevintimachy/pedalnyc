@@ -32,12 +32,12 @@ const PedalNYCHero = () => {
           >
             {/* Hero Title */}
             <Typography variant="h2" component="h1" sx={{ fontWeight: 'bold' }}>
-              Explore NYC CitiBike Trips
+              Pedal Through NYC Data
             </Typography>
 
             {/* Hero Subtitle */}
             <Typography variant="h6" sx={{ maxWidth: 600 }}>
-              Filter trips by time of day, trip duration, user type, and rider birth year to discover patterns in how people use CitiBike in NYC.
+              Discover trends, analyze riders, and visualize NYC CitiBike trips
             </Typography>
 
             {/* CTA Buttons */}

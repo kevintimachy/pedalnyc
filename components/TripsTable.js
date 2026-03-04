@@ -26,11 +26,7 @@ export default function TripsTable({
 }) {
   return (
     <Box>
-      <TableContainer
-        sx={{
-          maxHeight: '250px',
-        }}
-      >
+      <TableContainer sx={{ maxHeight: '250px' }}>
         <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
@@ -42,6 +38,7 @@ export default function TripsTable({
           </TableHead>
 
           <TableBody>
+            {/* Loading State */}
             {isLoading && (
               <TableRow>
                 <TableCell colSpan={4} align="center">
@@ -53,14 +50,13 @@ export default function TripsTable({
                     sx={{ py: 3 }}
                   >
                     <CircularProgress size={20} />
-                    <Typography variant="body2">
-                      Loading trips…
-                    </Typography>
+                    <Typography variant="body2">Loading trips…</Typography>
                   </Stack>
                 </TableCell>
               </TableRow>
             )}
 
+            {/* No trips found */}
             {!isLoading && rows.length === 0 && (
               <TableRow>
                 <TableCell colSpan={4} align="center">
@@ -69,6 +65,7 @@ export default function TripsTable({
               </TableRow>
             )}
 
+            {/* Trip rows */}
             {!isLoading &&
               rows.map((trip) => {
                 const duration =
@@ -81,15 +78,11 @@ export default function TripsTable({
                     key={trip._id}
                     hover
                     sx={{ cursor: 'pointer' }}
-                    onClick={() => onRowClick(trip._id)}
+                    onClick={() => onRowClick(trip)} // pass full trip object
                   >
                     <TableCell>{trip?.bikeid}</TableCell>
-                    <TableCell>
-                      {trip['start station name']}
-                    </TableCell>
-                    <TableCell>
-                      {trip['end station name']}
-                    </TableCell>
+                    <TableCell>{trip['start station name']}</TableCell>
+                    <TableCell>{trip['end station name']}</TableCell>
                     <TableCell>{duration}</TableCell>
                   </TableRow>
                 );
@@ -98,7 +91,7 @@ export default function TripsTable({
         </Table>
       </TableContainer>
 
-      {/* FIXED FOOTER */}
+      {/* Pagination */}
       <TablePagination
         component="div"
         count={totalTrips ?? -1}
